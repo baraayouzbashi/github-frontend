@@ -23,7 +23,8 @@ export async function getServerSideProps() {
   };
 }
 
-export default function Home(data) {
+// eslint-disable-next-line
+export default function Home(data: any) {
   console.warn(data);
   return <div>Hi</div>;
 }
