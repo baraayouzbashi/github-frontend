@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { GetRepositoryIssuesQuery } from "@/gql-client/__generated__/graphql";
 import IssueListItem from "@/components/List/IssueListItem";
 import List from "@/components/List";
+import Switch from "@/components/ui/Switch";
 
 const Container = styled.div`
   max-width: 1280px;
@@ -37,7 +38,7 @@ const SearchBar = styled.input`
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px #0969da;
+    box-shadow: inset 0 0 0 1px #0969da;
   }
 `;
 
@@ -46,6 +47,7 @@ interface Props {
 }
 export default function IndexPage({ data }: Props) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [showOpenIssues, setShowOpenIssues] = useState<boolean>(false);
   if (!data.repository) {
     return <div>Loading ... </div>;
   }
@@ -61,6 +63,10 @@ export default function IndexPage({ data }: Props) {
       <Title>
         {data.repository.owner.login} / {data.repository.name}
       </Title>
+      <Switch
+        checked={showOpenIssues}
+        onCheckedChange={() => setShowOpenIssues((prevState) => !prevState)}
+      />
       <Description>{data.repository.description}</Description>
       <SearchBar
         type="text"
