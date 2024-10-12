@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import Home, { getServerSideProps } from "../index";
+import Home, { getServerSideProps } from "../../pages";
 import { GetRepositoryIssuesQuery } from "@/gql-client/__generated__/graphql";
 import { MockedValue } from "../../../jest.setup";
 

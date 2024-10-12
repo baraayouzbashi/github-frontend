@@ -10,21 +10,24 @@ import {
 } from "./styled";
 import { GetIssueWithCommentsByIdQuery } from "@/gql-client/__generated__/graphql";
 
-export default function IssuePage({
-  data,
-}: {
-  data: GetIssueWithCommentsByIdQuery["node"];
-}) {
-  if (!data) {
+type IssueNode = StrictExtract<
+  NonNullable<GetIssueWithCommentsByIdQuery["node"]>,
+  { __typename?: "Issue" }
+>;
+
+interface Props {
+  node: IssueNode;
+}
+export default function IssuePage({ node: issue }: Props) {
+  if (!issue) {
     return <div>Loading...</div>;
   }
-  const { node: issue } = data;
 
   return (
     <IssueContainer>
       <IssueTitle>{issue.title}</IssueTitle>
       <IssueMetadata>
-        {issue.author.login ?? `Created by ${issue.author.login} on `}
+        {issue.author?.login ? `Created by ${issue.author.login} on ` : ``}
         {new Date(issue.createdAt).toLocaleDateString()}
         <br />
         State: {issue.state}
@@ -35,17 +38,20 @@ export default function IssuePage({
       </IssueMetadata>
       <IssueBody>{issue.body}</IssueBody>
       <h2>Comments</h2>
-      {issue.comments.nodes.map((comment) => (
-        <CommentItem key={comment.createdAt}>
-          {comment.author?.login ? (
-            <CommentAuthor>{comment.author.login}</CommentAuthor>
-          ) : null}
-          <CommentDate>
-            {new Date(comment.createdAt).toLocaleDateString()}
-          </CommentDate>
-          <p>{comment.body}</p>
-        </CommentItem>
-      ))}
+      {issue.comments.nodes?.map((comment) => {
+        if (comment === null) return null;
+        return (
+          <CommentItem key={comment.createdAt}>
+            {comment.author?.login ? (
+              <CommentAuthor>{comment.author.login}</CommentAuthor>
+            ) : null}
+            <CommentDate>
+              {new Date(comment.createdAt).toLocaleDateString()}
+            </CommentDate>
+            <p>{comment.body}</p>
+          </CommentItem>
+        );
+      })}
     </IssueContainer>
   );
 }

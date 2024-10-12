@@ -13,7 +13,11 @@ import Switch from "@/components/common/Switch";
 import { useRouter } from "next/router";
 
 interface Props {
-  data: GetRepositoryIssuesQuery["repository"]["issues"]["nodes"];
+  data: NonNullable<
+    NonNullable<
+      NonNullable<GetRepositoryIssuesQuery["repository"]>["issues"]
+    >["nodes"]
+  >;
 }
 
 export default function IndexPage({ data }: Props) {
@@ -78,7 +82,10 @@ export default function IndexPage({ data }: Props) {
         </StyledLabel>
       </SearchBarContainer>
       {items.length ? (
-        items.map((item) => <IssueListItem item={item} key={item.id} />)
+        items.map((item) => {
+          if (item === null) return null;
+          return <IssueListItem item={item} key={item.id} />;
+        })
       ) : (
         <StyledMessage>No results ..</StyledMessage>
       )}

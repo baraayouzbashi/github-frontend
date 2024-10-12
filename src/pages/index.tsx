@@ -4,17 +4,19 @@ import { SearchIssuesByTitleOrBody } from "@/gql-client/queries/searchIssuesByTi
 import {
   GetRepositoryIssuesQuery,
   IssueState,
+  SearchIssuesByTitleOrBodyQuery,
 } from "@/gql-client/__generated__/graphql";
 import IndexPage from "@/components/Pages/Index";
-import { GetServerSideProps } from "next";
+import { ApolloQueryResult } from "@apollo/client";
+import { GetServerSidePropsContext } from "next";
 
-export async function getServerSideProps({ query }: GetServerSideProps) {
+export async function getServerSideProps({ query }: GetServerSidePropsContext) {
   let issuesState = IssueState.Closed;
   if (query?.isOpen) {
     issuesState = IssueState.Open;
   }
   if (query?.search) {
-    const { data } = await apolloClient
+    const { data } = (await apolloClient
       .query({
         query: SearchIssuesByTitleOrBody,
         variables: {
@@ -24,18 +26,18 @@ export async function getServerSideProps({ query }: GetServerSideProps) {
       })
       .catch((err) => {
         console.error("error fetching search results:", err);
-      });
+      })) as ApolloQueryResult<SearchIssuesByTitleOrBodyQuery>;
 
     return {
       props: {
-        data: data.search.edges
-          .map((edge) => edge.node)
-          .filter((e) => e.__typename == "Issue"),
+        data: (data?.search?.edges || [])
+          .map((edge) => edge?.node)
+          .filter((e) => e?.__typename == "Issue"),
       },
     };
   }
 
-  const { data } = await apolloClient
+  const { data } = (await apolloClient
     .query({
       query: GetRepositoryIssues,
       variables: {
@@ -47,11 +49,11 @@ export async function getServerSideProps({ query }: GetServerSideProps) {
     })
     .catch((err) => {
       console.error("error fetching repository issues:", err);
-    });
+    })) as ApolloQueryResult<GetRepositoryIssuesQuery>;
 
   return {
     props: {
-      data: data.repository.issues.nodes,
+      data: data.repository?.issues?.nodes || [],
     },
   };
 }
@@ -59,7 +61,11 @@ export async function getServerSideProps({ query }: GetServerSideProps) {
 export default function Home({
   data,
 }: {
-  data: GetRepositoryIssuesQuery["repository"]["issues"]["nodes"];
+  data: NonNullable<
+    NonNullable<
+      NonNullable<GetRepositoryIssuesQuery["repository"]>["issues"]
+    >["nodes"]
+  >;
 }) {
   return <IndexPage data={data} />;
 }

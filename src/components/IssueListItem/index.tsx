@@ -16,10 +16,19 @@ import {
 } from "./styled";
 
 interface Props {
-  item: GetRepositoryIssuesQuery["repository"]["issues"]["nodes"]["number"];
+  item: ElementOf<
+    NonNullable<
+      NonNullable<
+        NonNullable<GetRepositoryIssuesQuery["repository"]>["issues"]
+      >["nodes"]
+    >
+  >;
 }
 
 export default function IssueListItem({ item }: Props) {
+  if (item === null) {
+    return;
+  }
   return (
     <Item>
       <Link href={`/issue/${item.id}`} passHref={true} legacyBehavior>
@@ -35,13 +44,16 @@ export default function IssueListItem({ item }: Props) {
             </IconAndText>
             <CommentsCounter num={item.comments?.totalCount} />
           </HorizontalContainer>
-          {item.labels?.nodes?.map((label) => (
-            <IssueLabel
-              name={label.name}
-              color={label.color}
-              key={label.name}
-            />
-          ))}
+          {item.labels?.nodes?.map((label) => {
+            if (label === null) return null;
+            return (
+              <IssueLabel
+                name={label.name}
+                color={label.color}
+                key={label.name}
+              />
+            );
+          })}
         </StyledLink>
       </Link>
     </Item>
