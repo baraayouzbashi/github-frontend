@@ -7,7 +7,6 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: var(--color-background);
   padding: 0 1rem;
 `;
 const RelativeContainer = styled.div`
@@ -17,14 +16,14 @@ const RelativeContainer = styled.div`
 const Title = styled.h1`
   font-size: 9rem;
   font-weight: 800;
-  color: var(--color-text);
+  color: var(--color-accent);
   letter-spacing: 0.1em;
   margin: 0;
 `;
 
 const Label = styled.div`
-  background-color: var(--color-primary);
-  color: white;
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
   border-radius: 0.25rem;
@@ -35,7 +34,6 @@ const Label = styled.div`
 `;
 
 const Message = styled.div`
-  color: var(--color-text-light);
   margin-top: 2rem;
   text-align: center;
 `;
@@ -52,8 +50,8 @@ const Subheading = styled.p`
 
 const StyledLink = styled(Link)`
   margin-top: 3rem;
-  background-color: var(--color-primary);
-  color: white;
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
   font-weight: 600;
   padding: 0.75rem 1.5rem;
   border-radius: 0.375rem;
@@ -61,12 +59,12 @@ const StyledLink = styled(Link)`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #2779bd;
+    background-color: var(--color-accent);
   }
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(52, 144, 220, 0.5);
+    box-shadow: 0 0 0 3px var(--color-accent);
   }
 `;
 
