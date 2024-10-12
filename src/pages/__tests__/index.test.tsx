@@ -1,7 +1,8 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import Home from "../index";
+import Home, { getServerSideProps } from "../index";
 import { GetRepositoryIssuesQuery } from "@/gql-client/__generated__/graphql";
+import { MockedValue } from "../../../jest.setup";
 
 const data = {
   repository: {
@@ -29,5 +30,12 @@ describe("Home", () => {
   it("renders homepage unchanged", () => {
     const { container } = render(<Home data={data} />);
     expect(container).toMatchSnapshot();
+  });
+});
+describe("getServerSideProps", () => {
+  it("returns data inside props", async () => {
+    expect.assertions(1);
+    const res = await getServerSideProps();
+    expect(res).toEqual({ props: { data: MockedValue } });
   });
 });
