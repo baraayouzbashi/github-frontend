@@ -1,6 +1,9 @@
 import styled from "styled-components";
 import Link from "next/link";
-import { GetRepositoryIssuesQuery } from "@/gql-client/__generated__/graphql";
+import {
+  GetRepositoryIssuesQuery,
+  IssueState,
+} from "@/gql-client/__generated__/graphql";
 
 const Item = styled.li`
   padding: 12px;
@@ -16,10 +19,10 @@ const Item = styled.li`
 const StyledLink = styled.a`
   gap: 1rem;
 `;
-const IconAndText = styled.div`
+export const IconAndText = styled.div`
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
   gap: 5px;
   flex-wrap: nowrap;
 `;
@@ -29,10 +32,10 @@ const ItemTitle = styled.h4`
   margin-bottom: 0.5rem;
   color: var(--color-secondary);
 `;
-const HorizontalContainer = styled.div`
+export const HorizontalContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  align-content: center;
+  align-items: center;
 `;
 interface Props {
   item: GetRepositoryIssuesQuery["repository"]["issues"]["nodes"]["number"];
@@ -45,7 +48,11 @@ export default function IssueListItem({ item }: Props) {
         <StyledLink>
           <HorizontalContainer>
             <IconAndText>
-              {item.state === "Open" ? <OpenIssueSVG /> : <ClosedIssueSVG />}
+              {item.state === IssueState.Open ? (
+                <OpenIssueSVG />
+              ) : (
+                <ClosedIssueSVG />
+              )}
               <ItemTitle>{item.title}</ItemTitle>
             </IconAndText>
             <CommentsCounter num={item.comments.totalCount} />

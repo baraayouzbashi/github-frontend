@@ -5,15 +5,20 @@ import {
   IssueState,
 } from "@/gql-client/__generated__/graphql";
 import IndexPage from "@/components/IndexPage";
+import { GetServerSideProps } from "next";
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ query }: GetServerSideProps) {
+  let issuesState = IssueState.Closed;
+  if (query.isOpen) {
+    issuesState = IssueState.Open;
+  }
   const { data } = await apolloClient
     .query({
       query: GetRepositoryIssues,
       variables: {
         owner: "facebook",
         name: "react",
-        states: IssueState.Open,
+        states: issuesState,
         IssuePagination: 20,
       },
     })

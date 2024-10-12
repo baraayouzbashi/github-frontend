@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { GetRepositoryIssuesQuery } from "@/gql-client/__generated__/graphql";
 import IssueListItem from "@/components/List/IssueListItem";
 import List from "@/components/List";
 import Switch from "@/components/ui/Switch";
+import { useRouter } from "next/router";
 
 const Container = styled.div`
   max-width: 1280px;
@@ -27,7 +28,7 @@ const Description = styled.p`
 `;
 
 const SearchBar = styled.input`
-  width: 100%;
+  flex-grow: 1;
   padding: 0.75rem;
   font-size: 1rem;
   border: 1px solid #d1d9e0;
@@ -42,12 +43,49 @@ const SearchBar = styled.input`
   }
 `;
 
+const SearchBarContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  > * {
+    flex-shrink: 0;
+  }
+  margin-bottom: 2rem;
+  @media (min-width: 786px) {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0;
+  }
+`;
+const StyledLabel = styled.label`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+`;
+
 interface Props {
   data: GetRepositoryIssuesQuery;
 }
 export default function IndexPage({ data }: Props) {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [showOpenIssues, setShowOpenIssues] = useState<boolean>(false);
+  const [showOpenIssues, setShowOpenIssues] = useState<boolean>(
+    Boolean(router.query?.isOpen)
+  );
+  useEffect(() => {
+    const q = {};
+    if (showOpenIssues) {
+      q["isOpen"] = 1;
+    }
+    router.push({
+      pathname: "/",
+      query: q,
+    });
+  }, [showOpenIssues]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!data.repository) {
     return <div>Loading ... </div>;
   }
@@ -63,18 +101,24 @@ export default function IndexPage({ data }: Props) {
       <Title>
         {data.repository.owner.login} / {data.repository.name}
       </Title>
-      <Switch
-        checked={showOpenIssues}
-        onCheckedChange={() => setShowOpenIssues((prevState) => !prevState)}
-      />
       <Description>{data.repository.description}</Description>
-      <SearchBar
-        type="text"
-        placeholder="Search issues..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        aria-label="Search issues"
-      />
+      <SearchBarContainer>
+        <SearchBar
+          type="text"
+          placeholder="Search issues..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          aria-label="Search issues"
+        />
+        <StyledLabel>
+          Show open issues
+          <Switch
+            checked={showOpenIssues}
+            onCheckedChange={() => setShowOpenIssues((prevState) => !prevState)}
+          />
+        </StyledLabel>
+      </SearchBarContainer>
+
       <List>
         {filteredItems.map((item) => (
           <IssueListItem item={item} key={item.title} />
