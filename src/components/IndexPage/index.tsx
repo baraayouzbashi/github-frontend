@@ -5,7 +5,7 @@ import IssueListItem from "@/components/List/IssueListItem";
 import List from "@/components/List";
 
 const Container = styled.div`
-  max-width: 800px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
@@ -14,7 +14,7 @@ const Container = styled.div`
 
 const Title = styled.h1`
   font-weight: bold;
-  font-size: 92px;
+  font-size: 3rem;
   color: var(--color-secondary);
   margin-bottom: 1rem;
 `;
@@ -29,15 +29,15 @@ const SearchBar = styled.input`
   width: 100%;
   padding: 0.75rem;
   font-size: 1rem;
-  border: 1px solid var(--color-primary);
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #d1d9e0;
+  border-radius: 6px;
+  background: #f6f8fa;
+  box-shadow: inset 0 1px 0 0 #1f23280a;
   transition: box-shadow 0.3s ease-in-out;
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 2px var(--color-accent);
+    box-shadow: 0 0 0 2px #0969da;
   }
 `;
 
@@ -58,7 +58,9 @@ export default function IndexPage({ data }: Props) {
 
   return (
     <Container>
-      <Title>{data.repository.name}</Title>
+      <Title>
+        {data.repository.owner.login} / {data.repository.name}
+      </Title>
       <Description>{data.repository.description}</Description>
       <SearchBar
         type="text"

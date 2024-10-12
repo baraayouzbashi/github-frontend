@@ -5,11 +5,27 @@ query GetRepositoryIssues($owner: String!, $name: String!, $states: [IssueState!
   repository(owner: $owner, name: $name) {
     name
     description
-    issues(states: $states, first: $IssuePagination) {
+    owner {
+      login
+    }
+    issues(
+      states: $states
+      first: $IssuePagination
+      orderBy: {direction: DESC, field: CREATED_AT}
+    ) {
       totalCount
       nodes {
+        state
         title
-        body
+        labels(first: 3) {
+          nodes {
+            color
+            name
+          }
+        }
+        comments {
+          totalCount
+        }
         id
       }
     }
