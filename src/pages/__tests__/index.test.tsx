@@ -5,13 +5,9 @@ import { GetRepositoryIssuesQuery } from "@/gql-client/__generated__/graphql";
 import { MockedValue } from "../../../jest.setup";
 
 const data = {
-  repository: {
-    name: "name of repo",
-    description: "description of the repo",
-    issues: {
-      nodes: [],
-      totalCount: 0,
-    },
+  issues: {
+    nodes: [],
+    totalCount: 0,
   },
 } as GetRepositoryIssuesQuery;
 
@@ -20,11 +16,10 @@ describe("Home", () => {
     render(<Home data={data} />);
     const heading = screen.queryByRole("heading", { level: 1 });
     expect(heading).toBeInTheDocument();
-    expect(heading.innerHTML).toEqual(data.repository?.name);
   });
   it("renders Loading screen", () => {
-    render(<Home data={{ repository: null }} />);
-    const loading = screen.getByText(/Loading/);
+    render(<Home data={[]} />);
+    const loading = screen.getByText(/No results/);
     expect(loading).toBeTruthy();
   });
   it("renders homepage unchanged", () => {
@@ -35,7 +30,9 @@ describe("Home", () => {
 describe("getServerSideProps", () => {
   it("returns data inside props", async () => {
     expect.assertions(1);
-    const res = await getServerSideProps();
-    expect(res).toEqual({ props: { data: MockedValue } });
+    const res = await getServerSideProps({});
+    expect(res).toEqual({
+      props: { data: MockedValue.repository.issues.nodes },
+    });
   });
 });

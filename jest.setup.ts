@@ -11,4 +11,11 @@ jest.mock("@apollo/client", () => ({
   InMemoryCache: jest.fn(),
 }));
 
-export const MockedValue = { success: true };
+jest.mock("next/router", () => ({
+  useRouter: jest.fn().mockImplementation(() => ({
+    query: {},
+    push: jest.fn().mockImplementation(() => Promise.resolve()),
+  })),
+}));
+
+export const MockedValue = { repository: { issues: { nodes: [] } } };

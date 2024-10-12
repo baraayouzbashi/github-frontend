@@ -5,15 +5,15 @@ import {
   GetRepositoryIssuesQuery,
   IssueState,
 } from "@/gql-client/__generated__/graphql";
-import IndexPage from "@/components/IndexPage";
+import IndexPage from "@/components/Pages/Index";
 import { GetServerSideProps } from "next";
 
 export async function getServerSideProps({ query }: GetServerSideProps) {
   let issuesState = IssueState.Closed;
-  if (query.isOpen) {
+  if (query?.isOpen) {
     issuesState = IssueState.Open;
   }
-  if (query.search) {
+  if (query?.search) {
     const { data } = await apolloClient
       .query({
         query: SearchIssuesByTitleOrBody,
