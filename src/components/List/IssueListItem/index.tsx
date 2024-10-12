@@ -47,7 +47,7 @@ interface Props {
   item: { title: string; body: string; id: string };
 }
 
-export default function Issue({ item }: Props) {
+export default function IssueListItem({ item }: Props) {
   return (
     <Item>
       <Link href={`/issue/${item.id}`} passHref={true} legacyBehavior>

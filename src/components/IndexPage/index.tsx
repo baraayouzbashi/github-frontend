@@ -1,7 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { GetRepositoryIssuesQuery } from "@/gql-client/__generated__/graphql";
-import Issue from "@/components/Issue";
+import IssueListItem from "@/components/List/IssueListItem";
+import List from "@/components/List";
 
 const Container = styled.div`
   max-width: 800px;
@@ -40,13 +41,6 @@ const SearchBar = styled.input`
   }
 `;
 
-const ItemList = styled.ul`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  list-style-type: none;
-`;
-
 interface Props {
   data: GetRepositoryIssuesQuery;
 }
@@ -73,11 +67,11 @@ export default function IndexPage({ data }: Props) {
         onChange={(e) => setSearchTerm(e.target.value)}
         aria-label="Search issues"
       />
-      <ItemList>
+      <List>
         {filteredItems.map((item) => (
-          <Issue item={item} key={item.title} />
+          <IssueListItem item={item} key={item.title} />
         ))}
-      </ItemList>
+      </List>
     </Container>
   );
 }
