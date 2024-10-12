@@ -55,9 +55,9 @@ export default function IssueListItem({ item }: Props) {
               )}
               <ItemTitle>{item.title}</ItemTitle>
             </IconAndText>
-            <CommentsCounter num={item.comments.totalCount} />
+            <CommentsCounter num={item.comments?.totalCount} />
           </HorizontalContainer>
-          {item.labels.nodes.map((label) => (
+          {item.labels?.nodes?.map((label) => (
             <IssueLabel
               name={label.name}
               color={label.color}

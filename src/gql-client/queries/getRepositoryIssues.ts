@@ -3,11 +3,6 @@ import { gql } from "../__generated__/gql";
 export const GetRepositoryIssues = gql(/*GraphQL*/ `
 query GetRepositoryIssues($owner: String!, $name: String!, $states: [IssueState!], $IssuePagination: Int!) {
   repository(owner: $owner, name: $name) {
-    name
-    description
-    owner {
-      login
-    }
     issues(
       states: $states
       first: $IssuePagination

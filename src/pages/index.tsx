@@ -1,5 +1,6 @@
 import apolloClient from "@/gql-client/apollo-client";
 import { GetRepositoryIssues } from "@/gql-client/queries/getRepositoryIssues";
+import { SearchIssuesByTitleOrBody } from "@/gql-client/queries/searchIssuesByTitleOrBody";
 import {
   GetRepositoryIssuesQuery,
   IssueState,
@@ -12,6 +13,28 @@ export async function getServerSideProps({ query }: GetServerSideProps) {
   if (query.isOpen) {
     issuesState = IssueState.Open;
   }
+  if (query.search) {
+    const { data } = await apolloClient
+      .query({
+        query: SearchIssuesByTitleOrBody,
+        variables: {
+          query: `repo:facebook/react in:title in:body is:${issuesState} ${query.search}`,
+          numResults: 20,
+        },
+      })
+      .catch((err) => {
+        console.error("error fetching search results:", err);
+      });
+
+    return {
+      props: {
+        data: data.search.edges
+          .map((edge) => edge.node)
+          .filter((e) => e.__typename == "Issue"),
+      },
+    };
+  }
+
   const { data } = await apolloClient
     .query({
       query: GetRepositoryIssues,
@@ -28,11 +51,15 @@ export async function getServerSideProps({ query }: GetServerSideProps) {
 
   return {
     props: {
-      data,
+      data: data.repository.issues.nodes,
     },
   };
 }
 
-export default function Home({ data }: { data: GetRepositoryIssuesQuery }) {
+export default function Home({
+  data,
+}: {
+  data: GetRepositoryIssuesQuery["repository"]["issues"]["nodes"];
+}) {
   return <IndexPage data={data} />;
 }
