@@ -19,6 +19,9 @@ const IconAndText = styled.div`
   align-items: center;
   gap: 5px;
   flex-wrap: nowrap;
+  & > svg {
+    flex-shrink: 0;
+  }
 `;
 const ItemTitle = styled.h4`
   font-size: 1rem;
