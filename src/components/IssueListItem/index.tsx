@@ -1,8 +1,5 @@
 import Link from "next/link";
-import {
-  GetRepositoryIssuesQuery,
-  IssueState,
-} from "@/gql-client/__generated__/graphql";
+import { IssueState } from "@/gql-client/__generated__/graphql";
 import CommentSVG from "@/components/common/Icons/Comment";
 import OpenIssueSVG from "@/components/common/Icons/OpenIssue";
 import ClosedIssueSVG from "@/components/common/Icons/ClosedIssue";
@@ -16,13 +13,7 @@ import {
 } from "./styled";
 
 interface Props {
-  item: ElementOf<
-    NonNullable<
-      NonNullable<
-        NonNullable<GetRepositoryIssuesQuery["repository"]>["issues"]
-      >["nodes"]
-    >
-  >;
+  item: any; // eslint-disable-line
 }
 
 export default function IssueListItem({ item }: Props) {
@@ -44,16 +35,19 @@ export default function IssueListItem({ item }: Props) {
             </IconAndText>
             <CommentsCounter num={item.comments?.totalCount} />
           </HorizontalContainer>
-          {item.labels?.nodes?.map((label) => {
-            if (label === null) return null;
-            return (
-              <IssueLabel
-                name={label.name}
-                color={label.color}
-                key={label.name}
-              />
-            );
-          })}
+          {
+            // eslint-disable-next-line
+            item.labels?.nodes?.map((label: any) => {
+              if (label === null) return null;
+              return (
+                <IssueLabel
+                  name={label.name}
+                  color={label.color}
+                  key={label.name}
+                />
+              );
+            })
+          }
         </StyledLink>
       </Link>
     </Item>

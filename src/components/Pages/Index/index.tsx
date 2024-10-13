@@ -99,8 +99,9 @@ export default function IndexPage() {
       </SearchBarContainer>
       {!loading &&
         items.length > 0 &&
-        items.map((item) => {
-          if (item === null) return null;
+        //eslint-disable-next-line
+        items.map((item: any) => {
+          if (!item) return null;
           return <IssueListItem item={item} key={item.id} />;
         })}
       {!loading && items.length == 0 && (
